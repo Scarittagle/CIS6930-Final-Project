@@ -16,8 +16,6 @@ using namespace std;
 
 string epochConversion(string epochTime);
 
-string timeFormatting(string epochTime);
-
 void readfile();
 
 void sort_10Sec(string rawTime, string octet, string duration);
@@ -28,13 +26,35 @@ void sort_5Min(string rawTime, string octet, string duration);
 
 void logProcessResult(string path, vector<consolidated_result> result, int timeframe, int week);
 
+void logFinalResult(vector<final_result> result, int window);
+
 vector<consolidated_result> setOD_Average(multimap<string, flowdata> sortedData);
+
 
 void SpearmanCoefficient_10Sec_Ra1a2();
 
+void SpearmanCoefficient_277Sec_Ra1a2();
+
+void SpearmanCoefficient_5Min_Ra1a2();
+
 void SpearmanCoefficient_10Sec_Ra1b2();
 
+void SpearmanCoefficient_277Sec_Ra1b2();
+
+void SpearmanCoefficient_5Min_Ra1b2();
+
 void SpearmanCoefficient_10Sec_Ra2b2();
+
+void SpearmanCoefficient_277Sec_Ra2b2();
+
+void SpearmanCoefficient_5Min_Ra2b2();
+
+
+void Calculate_P_Value_10Sec_Window();
+
+void Calculate_P_Value_277Sec_Window();
+
+void Calculate_P_Value_5Min_Window();
 
 void initializeContainer();
 

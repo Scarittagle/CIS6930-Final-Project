@@ -6,6 +6,8 @@
 #include "functions.h"
 #include "TimeIntervalmapping.h"
 #include "spearman.h"
+#include "zTest.h"
+#include "Pfunction.h"
 
 
 namespace fs = std::filesystem;
@@ -30,12 +32,6 @@ string epochConversion(string epochTime) {
 	if (finalc[strlen(finalc) - 1] == '\n') finalc[strlen(finalc) - 1] = '\0';
 	return finalc;
 }
-
-string timeFormatting(string epochTime) {
-	string str = epochConversion(epochTime);
-	return str.substr(0, 10) + str.substr(20, 4);
-}
-
 
 void readfile() {
 	//Setup Temporal Storage space
@@ -385,7 +381,7 @@ void SpearmanCoefficient_10Sec_Ra1a2() {
 	//R a1a2 - Compare Subject A Week 1 and Subject A Week 2
 	multimap <string, vector<consolidated_result>> ::iterator itrA1A2;
 
-	string extension = "_Spearman_rA1A2.csv";
+	string extension = "_Spearman_rA1A2_10Sec.csv";
 	string completePath = "SpearmanResult\\" + extension;
 	ofstream spearmanResultLog;
 	spearmanResultLog.open(completePath, ios::out);\
@@ -427,6 +423,108 @@ void SpearmanCoefficient_10Sec_Ra1a2() {
 	
 }
 
+void SpearmanCoefficient_277Sec_Ra1a2() {
+	cout << "Calculating Spearman Correlation Coefficient....(277 Second Interval)" << endl;
+	//
+	vector<double> A1, A2, B1, B2;
+	vector<double> Ra1a2SpearmanResult;
+	//10Sec Spearman Coefficient Data
+	//R a1a2 - Compare Subject A Week 1 and Subject A Week 2
+	multimap <string, vector<consolidated_result>> ::iterator itrA1A2;
+
+	string extension = "_Spearman_rA1A2_277Sec.csv";
+	string completePath = "SpearmanResult\\" + extension;
+	ofstream spearmanResultLog;
+	spearmanResultLog.open(completePath, ios::out); \
+		spearmanResultLog << "SPEARMAN CORRELATION COEFFICIENT RESULT FOR Ra1a2\n";
+	spearmanResultLog << "Subject A1, Subject A2, Spearman Result,\n";
+
+	for (itrA1A2 = Week1_277Sec.begin(); itrA1A2 != Week1_277Sec.end(); itrA1A2++) {
+		cout << "Calculating Spearman Correlation Coefficient Criteria R1a2a.... Target 1A: " << itrA1A2->first << endl;
+		int A1Count = 0;
+		int A2Count = 0;
+		string subjectA1 = itrA1A2->first;
+		vector<consolidated_result> subjectA1Data = itrA1A2->second;
+		vector<consolidated_result>::iterator itrCR1;
+		multimap <string, vector<consolidated_result>> ::iterator itr2;
+		//Inject A1 Data
+		for (itrCR1 = subjectA1Data.begin(); itrCR1 != subjectA1Data.end(); ++itrCR1) {
+			A1.push_back(itrCR1->ODavg);
+			A1Count++;
+		}
+		//loop for A2
+		itr2 = Week2_277Sec.find(subjectA1);
+		vector<consolidated_result> subjectA2Data = itr2->second;
+		vector<consolidated_result>::iterator itrCR2;
+		//Inject A2 Data
+		for (itrCR2 = subjectA2Data.begin(); itrCR2 != subjectA2Data.end(); ++itrCR2) {
+			A2.push_back(itrCR2->ODavg);
+			A2Count++;
+		}
+		//Compare
+		const int TotalCount = A1Count;
+		double spearmanResult = spearman(TotalCount, getRank(TotalCount, A1), getRank(TotalCount, A2));
+		//Log Result
+		spearmanResultLog << subjectA1 << "," << subjectA1 << "," << spearmanResult << "\n";
+		A1.clear();
+		A2.clear();
+	}
+	spearmanResultLog.close();
+	cout << "R1a2a... Done." << endl;
+
+}
+
+void SpearmanCoefficient_5Min_Ra1a2() {
+	cout << "Calculating Spearman Correlation Coefficient....(5 Minute Interval)" << endl;
+	//
+	vector<double> A1, A2, B1, B2;
+	vector<double> Ra1a2SpearmanResult;
+	//10Sec Spearman Coefficient Data
+	//R a1a2 - Compare Subject A Week 1 and Subject A Week 2
+	multimap <string, vector<consolidated_result>> ::iterator itrA1A2;
+
+	string extension = "_Spearman_rA1A2_5Min.csv";
+	string completePath = "SpearmanResult\\" + extension;
+	ofstream spearmanResultLog;
+	spearmanResultLog.open(completePath, ios::out); \
+		spearmanResultLog << "SPEARMAN CORRELATION COEFFICIENT RESULT FOR Ra1a2\n";
+	spearmanResultLog << "Subject A1, Subject A2, Spearman Result,\n";
+
+	for (itrA1A2 = Week1_5Min.begin(); itrA1A2 != Week1_5Min.end(); itrA1A2++) {
+		cout << "Calculating Spearman Correlation Coefficient Criteria R1a2a.... Target 1A: " << itrA1A2->first << endl;
+		int A1Count = 0;
+		int A2Count = 0;
+		string subjectA1 = itrA1A2->first;
+		vector<consolidated_result> subjectA1Data = itrA1A2->second;
+		vector<consolidated_result>::iterator itrCR1;
+		multimap <string, vector<consolidated_result>> ::iterator itr2;
+		//Inject A1 Data
+		for (itrCR1 = subjectA1Data.begin(); itrCR1 != subjectA1Data.end(); ++itrCR1) {
+			A1.push_back(itrCR1->ODavg);
+			A1Count++;
+		}
+		//loop for A2
+		itr2 = Week2_5Min.find(subjectA1);
+		vector<consolidated_result> subjectA2Data = itr2->second;
+		vector<consolidated_result>::iterator itrCR2;
+		//Inject A2 Data
+		for (itrCR2 = subjectA2Data.begin(); itrCR2 != subjectA2Data.end(); ++itrCR2) {
+			A2.push_back(itrCR2->ODavg);
+			A2Count++;
+		}
+		//Compare
+		const int TotalCount = A1Count;
+		double spearmanResult = spearman(TotalCount, getRank(TotalCount, A1), getRank(TotalCount, A2));
+		//Log Result
+		spearmanResultLog << subjectA1 << "," << subjectA1 << "," << spearmanResult << "\n";
+		A1.clear();
+		A2.clear();
+	}
+	spearmanResultLog.close();
+	cout << "R1a2a... Done." << endl;
+
+}
+
 void SpearmanCoefficient_10Sec_Ra1b2() {
 
 	//R a1b2
@@ -442,7 +540,7 @@ void SpearmanCoefficient_10Sec_Ra1b2() {
 		vector<consolidated_result> subjectAData = itrA1B2->second;
 		vector<consolidated_result>::iterator itrCR1;
 		multimap <string, vector<consolidated_result>> ::iterator itr2;
-		string extension = "_Spearman_rA1B2.csv";
+		string extension = "_Spearman_rA1B2_10Sec.csv";
 		string toErase1 = ".csv";
 		string toErase2 = "CSV\\";
 		size_t pos1 = subjectA.find(toErase1);
@@ -489,6 +587,130 @@ void SpearmanCoefficient_10Sec_Ra1b2() {
 
 }
 
+void SpearmanCoefficient_277Sec_Ra1b2() {
+
+	//R a1b2
+	//R a1b2 - Compare Subject A Week 1 and Subject B Week 2
+	vector<double> A1, A2, B1, B2;
+	multimap <string, vector<consolidated_result>> ::iterator itrA1B2;
+
+	for (itrA1B2 = Week1_277Sec.begin(); itrA1B2 != Week1_277Sec.end(); itrA1B2++) {
+		cout << "Calculating Spearman Correlation Coefficient Criteria R1a2b.... Target 1A: " << itrA1B2->first << endl;
+		int A1Count = 0;
+		int B2Count = 0;
+		string subjectA = itrA1B2->first;
+		vector<consolidated_result> subjectAData = itrA1B2->second;
+		vector<consolidated_result>::iterator itrCR1;
+		multimap <string, vector<consolidated_result>> ::iterator itr2;
+		string extension = "_Spearman_rA1B2_277Sec.csv";
+		string toErase1 = ".csv";
+		string toErase2 = "CSV\\";
+		size_t pos1 = subjectA.find(toErase1);
+		size_t pos2 = subjectA.find(toErase2);
+
+		if (pos1 != string::npos)
+		{
+			// If found then erase it from string
+			subjectA.erase(pos1, toErase1.length());
+			subjectA.erase(pos2, toErase2.length());
+		}
+		string completePath = "SpearmanResult\\" + subjectA + extension;
+		ofstream spearmanResultLog;
+		spearmanResultLog.open(completePath, ios::out);
+		spearmanResultLog << "SPEARMAN CORRELATION COEFFICIENT RESULT FOR " << completePath << "\n";
+		spearmanResultLog << "Subject A1, Subject B2, Spearman Result,\n";
+		//Inject A1 Data
+		for (itrCR1 = subjectAData.begin(); itrCR1 != subjectAData.end(); itrCR1++) {
+			A1.push_back(itrCR1->ODavg);
+			A1Count++;
+		}
+		//Inner loop for B2
+		for (itr2 = Week2_277Sec.begin(); itr2 != Week2_277Sec.end(); ++itr2)
+		{
+			string subjectB = itr2->first;
+			vector<consolidated_result> subjectB1Data = itr2->second;
+			vector<consolidated_result>::iterator itrCR2;
+			//Inject B2 Data
+			for (itrCR2 = subjectB1Data.begin(); itrCR2 != subjectB1Data.end(); itrCR2++) {
+				B2.push_back(itrCR2->ODavg);
+				B2Count++;
+			}
+			//Compare with A1
+			const int TotalCount = A1Count;
+			double spearmanResult = spearman(TotalCount, getRank(TotalCount, A1), getRank(TotalCount, B2));
+			//Log Result
+			spearmanResultLog << subjectA << "," << subjectB << "," << spearmanResult << "\n";
+			B2.clear();
+		}
+		spearmanResultLog.close();
+		A1.clear();
+	}
+	cout << "R1a2b... Done." << endl;
+
+}
+
+void SpearmanCoefficient_5Min_Ra1b2() {
+
+	//R a1b2
+	//R a1b2 - Compare Subject A Week 1 and Subject B Week 2
+	vector<double> A1, A2, B1, B2;
+	multimap <string, vector<consolidated_result>> ::iterator itrA1B2;
+
+	for (itrA1B2 = Week1_5Min.begin(); itrA1B2 != Week1_5Min.end(); itrA1B2++) {
+		cout << "Calculating Spearman Correlation Coefficient Criteria R1a2b.... Target 1A: " << itrA1B2->first << endl;
+		int A1Count = 0;
+		int B2Count = 0;
+		string subjectA = itrA1B2->first;
+		vector<consolidated_result> subjectAData = itrA1B2->second;
+		vector<consolidated_result>::iterator itrCR1;
+		multimap <string, vector<consolidated_result>> ::iterator itr2;
+		string extension = "_Spearman_rA1B2_5Min.csv";
+		string toErase1 = ".csv";
+		string toErase2 = "CSV\\";
+		size_t pos1 = subjectA.find(toErase1);
+		size_t pos2 = subjectA.find(toErase2);
+
+		if (pos1 != string::npos)
+		{
+			// If found then erase it from string
+			subjectA.erase(pos1, toErase1.length());
+			subjectA.erase(pos2, toErase2.length());
+		}
+		string completePath = "SpearmanResult\\" + subjectA + extension;
+		ofstream spearmanResultLog;
+		spearmanResultLog.open(completePath, ios::out);
+		spearmanResultLog << "SPEARMAN CORRELATION COEFFICIENT RESULT FOR " << completePath << "\n";
+		spearmanResultLog << "Subject A1, Subject B2, Spearman Result,\n";
+		//Inject A1 Data
+		for (itrCR1 = subjectAData.begin(); itrCR1 != subjectAData.end(); itrCR1++) {
+			A1.push_back(itrCR1->ODavg);
+			A1Count++;
+		}
+		//Inner loop for B2
+		for (itr2 = Week2_5Min.begin(); itr2 != Week2_5Min.end(); ++itr2)
+		{
+			string subjectB = itr2->first;
+			vector<consolidated_result> subjectB1Data = itr2->second;
+			vector<consolidated_result>::iterator itrCR2;
+			//Inject B2 Data
+			for (itrCR2 = subjectB1Data.begin(); itrCR2 != subjectB1Data.end(); itrCR2++) {
+				B2.push_back(itrCR2->ODavg);
+				B2Count++;
+			}
+			//Compare with A1
+			const int TotalCount = A1Count;
+			double spearmanResult = spearman(TotalCount, getRank(TotalCount, A1), getRank(TotalCount, B2));
+			//Log Result
+			spearmanResultLog << subjectA << "," << subjectB << "," << spearmanResult << "\n";
+			B2.clear();
+		}
+		spearmanResultLog.close();
+		A1.clear();
+	}
+	cout << "R1a2b... Done." << endl;
+
+}
+
 void SpearmanCoefficient_10Sec_Ra2b2() {
 	//R a2b2
 	//R a2b2 - Compare Subject A Week 2 and Subject B Week 2
@@ -503,7 +725,7 @@ void SpearmanCoefficient_10Sec_Ra2b2() {
 		vector<consolidated_result> subjectAData = itrA2B2->second;
 		vector<consolidated_result>::iterator itrCR1;
 		multimap <string, vector<consolidated_result>> ::iterator itr2;
-		string extension = "_Spearman_rA2B2.csv";
+		string extension = "_Spearman_rA2B2_10Sec.csv";
 		string toErase1 = ".csv";
 		string toErase2 = "CSV\\";
 		size_t pos1 = subjectA.find(toErase1);
@@ -548,6 +770,400 @@ void SpearmanCoefficient_10Sec_Ra2b2() {
 	}
 	cout << "R2a2b... Done." << endl;
 
+}
+
+void SpearmanCoefficient_277Sec_Ra2b2() {
+	//R a2b2
+	//R a2b2 - Compare Subject A Week 2 and Subject B Week 2
+	vector<double> A1, A2, B1, B2;
+	multimap <string, vector<consolidated_result>> ::iterator itrA2B2;
+
+	for (itrA2B2 = Week2_277Sec.begin(); itrA2B2 != Week2_277Sec.end(); itrA2B2++) {
+		cout << "Calculating Spearman Correlation Coefficient Criteria R1a2b.... Target 1A: " << itrA2B2->first << endl;
+		int A2Count = 0;
+		int B2Count = 0;
+		string subjectA = itrA2B2->first;
+		vector<consolidated_result> subjectAData = itrA2B2->second;
+		vector<consolidated_result>::iterator itrCR1;
+		multimap <string, vector<consolidated_result>> ::iterator itr2;
+		string extension = "_Spearman_rA2B2_277Sec.csv";
+		string toErase1 = ".csv";
+		string toErase2 = "CSV\\";
+		size_t pos1 = subjectA.find(toErase1);
+		size_t pos2 = subjectA.find(toErase2);
+
+		if (pos1 != string::npos)
+		{
+			// If found then erase it from string
+			subjectA.erase(pos1, toErase1.length());
+			subjectA.erase(pos2, toErase2.length());
+		}
+		string completePath = "SpearmanResult\\" + subjectA + extension;
+		ofstream spearmanResultLog;
+		spearmanResultLog.open(completePath, ios::out);
+		spearmanResultLog << "SPEARMAN CORRELATION COEFFICIENT RESULT FOR " << completePath << "\n";
+		spearmanResultLog << "Subject A1, Subject B2, Spearman Result,\n";
+		//Inject A1 Data
+		for (itrCR1 = subjectAData.begin(); itrCR1 != subjectAData.end(); itrCR1++) {
+			A2.push_back(itrCR1->ODavg);
+			A2Count++;
+		}
+		//Inner loop for B2
+		for (itr2 = Week2_10Sec.begin(); itr2 != Week2_277Sec.end(); ++itr2)
+		{
+			string subjectB = itr2->first;
+			vector<consolidated_result> subjectB1Data = itr2->second;
+			vector<consolidated_result>::iterator itrCR2;
+			//Inject B2 Data
+			for (itrCR2 = subjectB1Data.begin(); itrCR2 != subjectB1Data.end(); itrCR2++) {
+				B2.push_back(itrCR2->ODavg);
+				B2Count++;
+			}
+			//Compare with A1
+			const int TotalCount = A2Count;
+			double spearmanResult = spearman(TotalCount, getRank(TotalCount, A2), getRank(TotalCount, B2));
+			//Log Result
+			spearmanResultLog << subjectA << "," << subjectB << "," << spearmanResult << "\n";
+			B2.clear();
+		}
+		spearmanResultLog.close();
+		A2.clear();
+	}
+	cout << "R2a2b... Done." << endl;
+
+}
+
+void SpearmanCoefficient_5Min_Ra2b2() {
+	//R a2b2
+	//R a2b2 - Compare Subject A Week 2 and Subject B Week 2
+	vector<double> A1, A2, B1, B2;
+	multimap <string, vector<consolidated_result>> ::iterator itrA2B2;
+
+	for (itrA2B2 = Week2_5Min.begin(); itrA2B2 != Week2_5Min.end(); itrA2B2++) {
+		cout << "Calculating Spearman Correlation Coefficient Criteria R1a2b.... Target 1A: " << itrA2B2->first << endl;
+		int A2Count = 0;
+		int B2Count = 0;
+		string subjectA = itrA2B2->first;
+		vector<consolidated_result> subjectAData = itrA2B2->second;
+		vector<consolidated_result>::iterator itrCR1;
+		multimap <string, vector<consolidated_result>> ::iterator itr2;
+		string extension = "_Spearman_rA2B2_5Min.csv";
+		string toErase1 = ".csv";
+		string toErase2 = "CSV\\";
+		size_t pos1 = subjectA.find(toErase1);
+		size_t pos2 = subjectA.find(toErase2);
+
+		if (pos1 != string::npos)
+		{
+			// If found then erase it from string
+			subjectA.erase(pos1, toErase1.length());
+			subjectA.erase(pos2, toErase2.length());
+		}
+		string completePath = "SpearmanResult\\" + subjectA + extension;
+		ofstream spearmanResultLog;
+		spearmanResultLog.open(completePath, ios::out);
+		spearmanResultLog << "SPEARMAN CORRELATION COEFFICIENT RESULT FOR " << completePath << "\n";
+		spearmanResultLog << "Subject A1, Subject B2, Spearman Result,\n";
+		//Inject A1 Data
+		for (itrCR1 = subjectAData.begin(); itrCR1 != subjectAData.end(); itrCR1++) {
+			A2.push_back(itrCR1->ODavg);
+			A2Count++;
+		}
+		//Inner loop for B2
+		for (itr2 = Week2_5Min.begin(); itr2 != Week2_5Min.end(); ++itr2)
+		{
+			string subjectB = itr2->first;
+			vector<consolidated_result> subjectB1Data = itr2->second;
+			vector<consolidated_result>::iterator itrCR2;
+			//Inject B2 Data
+			for (itrCR2 = subjectB1Data.begin(); itrCR2 != subjectB1Data.end(); itrCR2++) {
+				B2.push_back(itrCR2->ODavg);
+				B2Count++;
+			}
+			//Compare with A1
+			const int TotalCount = A2Count;
+			double spearmanResult = spearman(TotalCount, getRank(TotalCount, A2), getRank(TotalCount, B2));
+			//Log Result
+			spearmanResultLog << subjectA << "," << subjectB << "," << spearmanResult << "\n";
+			B2.clear();
+		}
+		spearmanResultLog.close();
+		A2.clear();
+	}
+	cout << "R2a2b... Done." << endl;
+
+}
+
+void Calculate_P_Value_10Sec_Window() {
+
+	//Trying to use the same iterator for Subject A and Subject B for R1a2a, R1a2b, R2a2b Set Universal Variable here
+	multimap <string, vector<consolidated_result>> ::iterator itrSubjectA;
+	multimap <string, vector<consolidated_result>> ::iterator itrSubjectB;
+	string SubjectA_Name;
+	string SubjectB_Name;
+
+
+	//Get R1a2a and R1a2b in one loop
+	//Master Loop start from Subject A
+	for (itrSubjectA = Week1_10Sec.begin(); itrSubjectA != Week1_10Sec.end(); itrSubjectA++) {
+		vector<final_result> result;
+		cout << "Calculating Spearman Correlation Coefficient --- Target A: " << itrSubjectA->first << endl;
+		vector<consolidated_result> subjectAData_week1;
+		vector<consolidated_result> subjectAData_week2;
+		vector<double> subjectA_Week1;
+		vector<double> subjectA_Week2;
+		double spearmanResult_R1a2a;
+		//Inject Subject A Week 1 (1a)
+		subjectAData_week1 = itrSubjectA->second;
+		vector<consolidated_result>::iterator itrAWeek1;
+		for (itrAWeek1 = subjectAData_week1.begin(); itrAWeek1 != subjectAData_week1.end(); itrAWeek1++) {
+			subjectA_Week1.push_back(itrAWeek1->ODavg);
+		}
+		//Inject Subject A Week 2 (2a)
+		multimap <string, vector<consolidated_result>> ::iterator itrSubjectA_Week2 = Week2_10Sec.find(itrSubjectA->first);
+		subjectAData_week2 = itrSubjectA_Week2->second;
+		vector<consolidated_result>::iterator itrAWeek2;
+		for (itrAWeek2 = subjectAData_week2.begin(); itrAWeek2 != subjectAData_week2.end(); itrAWeek2++) {
+			subjectA_Week2.push_back(itrAWeek2->ODavg);
+		}
+		//Calculate Spearman R1a2a
+		cout << "Calculating Spearman Correlation Coefficient Criteria --- R1a2a " << itrSubjectA->first << endl;
+		int arrSize = subjectA_Week1.size();
+		spearmanResult_R1a2a = spearman(arrSize, getRank(arrSize, subjectA_Week1), getRank(arrSize, subjectA_Week2)); //Set to Global Const data for injection
+		cout << endl;
+		//
+		//Secondary Loop for Subject B, Subject B only consist Week 2 data
+		for (itrSubjectB = Week2_10Sec.begin(); itrSubjectB != Week1_10Sec.end(); itrSubjectB++) {
+			final_result subject;
+			subject.subjectA = itrSubjectA->first; //Inject Subject A name into final_result container
+			subject.subjectB = itrSubjectB->first; //Inject Subject B name into final_result container
+			subject.spearmanCoefficient_R1a2a = spearmanResult_R1a2a; //Inject R1a2a Result into final_result container
+
+			vector<consolidated_result> subjectBData_week2;
+			vector<double> subjectB_Week2;
+			//Inject Subject B Week 2 (2b)
+			subjectBData_week2 = itrSubjectB->second;
+			for (vector<consolidated_result>::iterator itr = subjectBData_week2.begin(); itr != subjectBData_week2.end(); itr++) {
+				subjectB_Week2.push_back(itr->ODavg);
+			}
+
+			int arrSize = subjectB_Week2.size(); //As for 10Sec window it will remain 16200 set of data for all window.
+			//Calculate Spearman R1a2b
+			cout << "Calculating Spearman Correlation Coefficient R1a2b & R2a2b --- Target B: " << itrSubjectB->first << endl;
+			double spearmanResult_R1a2b = spearman(arrSize, getRank(arrSize, subjectA_Week1), getRank(arrSize, subjectB_Week2));
+
+			//
+			//Calculate Spearman R2a2b
+			double spearmanResult_R2a2b = spearman(arrSize, getRank(arrSize, subjectA_Week2), getRank(arrSize, subjectB_Week2));
+
+			//Calculate Z Value
+			//
+			double zValue = MRRZTest(spearmanResult_R1a2a, spearmanResult_R1a2b, spearmanResult_R2a2b, arrSize);
+			//Calculate P Value
+			//
+			double pValue = Pfunction(zValue);
+			
+			//store into container
+			subject.spearmanCoefficient_R1a2b = spearmanResult_R1a2b;
+			subject.spearmanCoefficient_R2a2b = spearmanResult_R2a2b;
+			subject.zValue = zValue;
+			subject.pValue = pValue;
+
+			result.push_back(subject);
+		}
+		//Log into CSV File
+		cout << "Writing Result into CSV file..." << endl;
+		logFinalResult(result, 10);
+	}
+}
+
+void Calculate_P_Value_277Sec_Window() {
+
+	//Trying to use the same iterator for Subject A and Subject B for R1a2a, R1a2b, R2a2b Set Universal Variable here
+	multimap <string, vector<consolidated_result>> ::iterator itrSubjectA;
+	multimap <string, vector<consolidated_result>> ::iterator itrSubjectB;
+	string SubjectA_Name;
+	string SubjectB_Name;
+
+
+	//Get R1a2a and R1a2b in one loop
+	//Master Loop start from Subject A
+	for (itrSubjectA = Week1_277Sec.begin(); itrSubjectA != Week1_277Sec.end(); itrSubjectA++) {
+		vector<final_result> result;
+		cout << "Calculating Spearman Correlation Coefficient --- Target A: " << itrSubjectA->first << endl;
+		vector<consolidated_result> subjectAData_week1;
+		vector<consolidated_result> subjectAData_week2;
+		vector<double> subjectA_Week1;
+		vector<double> subjectA_Week2;
+		double spearmanResult_R1a2a;
+		//Inject Subject A Week 1 (1a)
+		subjectAData_week1 = itrSubjectA->second;
+		vector<consolidated_result>::iterator itrAWeek1;
+		for (itrAWeek1 = subjectAData_week1.begin(); itrAWeek1 != subjectAData_week1.end(); itrAWeek1++) {
+			subjectA_Week1.push_back(itrAWeek1->ODavg);
+		}
+		//Inject Subject A Week 2 (2a)
+		multimap <string, vector<consolidated_result>> ::iterator itrSubjectA_Week2 = Week2_277Sec.find(itrSubjectA->first);
+		subjectAData_week2 = itrSubjectA_Week2->second;
+		vector<consolidated_result>::iterator itrAWeek2;
+		for (itrAWeek2 = subjectAData_week2.begin(); itrAWeek2 != subjectAData_week2.end(); itrAWeek2++) {
+			subjectA_Week2.push_back(itrAWeek2->ODavg);
+		}
+		//Calculate Spearman R1a2a
+		cout << "Calculating Spearman Correlation Coefficient Criteria --- R1a2a " << itrSubjectA->first << endl;
+		int arrSize = subjectA_Week1.size();
+		spearmanResult_R1a2a = spearman(arrSize, getRank(arrSize, subjectA_Week1), getRank(arrSize, subjectA_Week2)); //Set to Global Const data for injection
+		cout << endl;
+		//
+		//Secondary Loop for Subject B, Subject B only consist Week 2 data
+		for (itrSubjectB = Week2_277Sec.begin(); itrSubjectB != Week1_277Sec.end(); itrSubjectB++) {
+			final_result subject;
+			subject.subjectA = itrSubjectA->first; //Inject Subject A name into final_result container
+			subject.subjectB = itrSubjectB->first; //Inject Subject B name into final_result container
+			subject.spearmanCoefficient_R1a2a = spearmanResult_R1a2a; //Inject R1a2a Result into final_result container
+
+			vector<consolidated_result> subjectBData_week2;
+			vector<double> subjectB_Week2;
+			//Inject Subject B Week 2 (2b)
+			subjectBData_week2 = itrSubjectB->second;
+			for (vector<consolidated_result>::iterator itr = subjectBData_week2.begin(); itr != subjectBData_week2.end(); itr++) {
+				subjectB_Week2.push_back(itr->ODavg);
+			}
+
+			int arrSize = subjectB_Week2.size(); //As for 10Sec window it will remain 16200 set of data for all window.
+			//Calculate Spearman R1a2b
+			cout << "Calculating Spearman Correlation Coefficient R1a2b & R2a2b --- Target B: " << itrSubjectB->first << endl;
+			double spearmanResult_R1a2b = spearman(arrSize, getRank(arrSize, subjectA_Week1), getRank(arrSize, subjectB_Week2));
+
+			//
+			//Calculate Spearman R2a2b
+			double spearmanResult_R2a2b = spearman(arrSize, getRank(arrSize, subjectA_Week2), getRank(arrSize, subjectB_Week2));
+
+			//Calculate Z Value
+			//
+			double zValue = MRRZTest(spearmanResult_R1a2a, spearmanResult_R1a2b, spearmanResult_R2a2b, arrSize);
+			//Calculate P Value
+			//
+			double pValue = Pfunction(zValue);
+
+			//store into container
+			subject.spearmanCoefficient_R1a2b = spearmanResult_R1a2b;
+			subject.spearmanCoefficient_R2a2b = spearmanResult_R2a2b;
+			subject.zValue = zValue;
+			subject.pValue = pValue;
+
+			result.push_back(subject);
+		}
+		//Log into CSV File
+		cout << "Writing Result into CSV file..." << endl;
+		logFinalResult(result, 10);
+	}
+}
+
+void Calculate_P_Value_5Min_Window() {
+
+	//Trying to use the same iterator for Subject A and Subject B for R1a2a, R1a2b, R2a2b Set Universal Variable here
+	multimap <string, vector<consolidated_result>> ::iterator itrSubjectA;
+	multimap <string, vector<consolidated_result>> ::iterator itrSubjectB;
+	string SubjectA_Name;
+	string SubjectB_Name;
+
+
+	//Get R1a2a and R1a2b in one loop
+	//Master Loop start from Subject A
+	for (itrSubjectA = Week1_5Min.begin(); itrSubjectA != Week1_5Min.end(); itrSubjectA++) {
+		vector<final_result> result;
+		cout << "Calculating Spearman Correlation Coefficient --- Target A: " << itrSubjectA->first << endl;
+		vector<consolidated_result> subjectAData_week1;
+		vector<consolidated_result> subjectAData_week2;
+		vector<double> subjectA_Week1;
+		vector<double> subjectA_Week2;
+		double spearmanResult_R1a2a;
+		//Inject Subject A Week 1 (1a)
+		subjectAData_week1 = itrSubjectA->second;
+		vector<consolidated_result>::iterator itrAWeek1;
+		for (itrAWeek1 = subjectAData_week1.begin(); itrAWeek1 != subjectAData_week1.end(); itrAWeek1++) {
+			subjectA_Week1.push_back(itrAWeek1->ODavg);
+		}
+		//Inject Subject A Week 2 (2a)
+		multimap <string, vector<consolidated_result>> ::iterator itrSubjectA_Week2 = Week2_5Min.find(itrSubjectA->first);
+		subjectAData_week2 = itrSubjectA_Week2->second;
+		vector<consolidated_result>::iterator itrAWeek2;
+		for (itrAWeek2 = subjectAData_week2.begin(); itrAWeek2 != subjectAData_week2.end(); itrAWeek2++) {
+			subjectA_Week2.push_back(itrAWeek2->ODavg);
+		}
+		//Calculate Spearman R1a2a
+		cout << "Calculating Spearman Correlation Coefficient Criteria --- R1a2a " << itrSubjectA->first << endl;
+		int arrSize = subjectA_Week1.size();
+		spearmanResult_R1a2a = spearman(arrSize, getRank(arrSize, subjectA_Week1), getRank(arrSize, subjectA_Week2)); //Set to Global Const data for injection
+		cout << endl;
+		//
+		//Secondary Loop for Subject B, Subject B only consist Week 2 data
+		for (itrSubjectB = Week2_5Min.begin(); itrSubjectB != Week1_5Min.end(); itrSubjectB++) {
+			final_result subject;
+			subject.subjectA = itrSubjectA->first; //Inject Subject A name into final_result container
+			subject.subjectB = itrSubjectB->first; //Inject Subject B name into final_result container
+			subject.spearmanCoefficient_R1a2a = spearmanResult_R1a2a; //Inject R1a2a Result into final_result container
+
+			vector<consolidated_result> subjectBData_week2;
+			vector<double> subjectB_Week2;
+			//Inject Subject B Week 2 (2b)
+			subjectBData_week2 = itrSubjectB->second;
+			for (vector<consolidated_result>::iterator itr = subjectBData_week2.begin(); itr != subjectBData_week2.end(); itr++) {
+				subjectB_Week2.push_back(itr->ODavg);
+			}
+
+			int arrSize = subjectB_Week2.size(); //As for 10Sec window it will remain 16200 set of data for all window.
+			//Calculate Spearman R1a2b
+			cout << "Calculating Spearman Correlation Coefficient R1a2b & R2a2b --- Target B: " << itrSubjectB->first << endl;
+			double spearmanResult_R1a2b = spearman(arrSize, getRank(arrSize, subjectA_Week1), getRank(arrSize, subjectB_Week2));
+
+			//
+			//Calculate Spearman R2a2b
+			double spearmanResult_R2a2b = spearman(arrSize, getRank(arrSize, subjectA_Week2), getRank(arrSize, subjectB_Week2));
+
+			//Calculate Z Value
+			//
+			double zValue = MRRZTest(spearmanResult_R1a2a, spearmanResult_R1a2b, spearmanResult_R2a2b, arrSize);
+			//Calculate P Value
+			//
+			double pValue = Pfunction(zValue);
+
+			//store into container
+			subject.spearmanCoefficient_R1a2b = spearmanResult_R1a2b;
+			subject.spearmanCoefficient_R2a2b = spearmanResult_R2a2b;
+			subject.zValue = zValue;
+			subject.pValue = pValue;
+
+			result.push_back(subject);
+		}
+		//Log into CSV File
+		cout << "Writing Result into CSV file..." << endl;
+		logFinalResult(result, 10);
+	}
+}
+
+void logFinalResult(vector<final_result> result, int window) {
+	string windowframe = to_string(window);
+	string completePath = "FinalResult\\Final_result_" + windowframe + ".csv";
+	ofstream spearmanResultLog;
+	spearmanResultLog.open(completePath, ios::out);
+	spearmanResultLog << "SPEARMAN CORRELATION COEFFICIENT RESULT FOR " << completePath << "\n";
+	spearmanResultLog << "Subject A, Subject B, Spearman Result 1a2a, Spearman Result 1a2b, Spearman Result 2a2b, Z Value, P Value,\n";
+
+	//iterator
+	for (vector<final_result>::iterator itr = result.begin(); itr != result.end(); itr++) {
+		string subjectAname = itr->subjectA;
+		string subjectBname = itr->subjectB;
+		double R1a2a = itr->spearmanCoefficient_R1a2a;
+		double R1a2b = itr->spearmanCoefficient_R1a2b;
+		double R2a2b = itr->spearmanCoefficient_R2a2b;
+		double zValue = itr->zValue;
+		double pValue = itr->pValue;
+
+		spearmanResultLog << subjectAname << "," << subjectBname << "," << R1a2a << "," << R1a2b << "," << R2a2b << "," << zValue << "," << pValue << ",\n";
+	}
+	spearmanResultLog.close();
 }
 
 //Sort by 10 second interval

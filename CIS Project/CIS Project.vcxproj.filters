@@ -27,15 +27,15 @@
     <ClCompile Include="zTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Pfunction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="struct.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="functions.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="strptime.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="TimeIntervalmapping.h">
@@ -45,6 +45,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zTest.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Pfunction.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

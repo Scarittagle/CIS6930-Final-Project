@@ -27,4 +27,14 @@ struct consolidated_result {
 	double ODavg; //avg of Octet/Duration in one specific window.
 };
 
+struct final_result {
+	string subjectA;
+	string subjectB;
+	double spearmanCoefficient_R1a2a;
+	double spearmanCoefficient_R1a2b;
+	double spearmanCoefficient_R2a2b;
+	double zValue;
+	double pValue;
+};
+
 #endif // !1

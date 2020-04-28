@@ -124,13 +124,14 @@
     <ClCompile Include="Main.cpp">
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="Pfunction.cpp" />
     <ClCompile Include="spearman.cpp" />
     <ClCompile Include="zTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="functions.h" />
+    <ClInclude Include="Pfunction.h" />
     <ClInclude Include="spearman.h" />
-    <ClInclude Include="strptime.h" />
     <ClInclude Include="struct.h" />
     <ClInclude Include="TimeIntervalmapping.h" />
     <ClInclude Include="zTest.h" />
